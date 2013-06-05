@@ -1,0 +1,11 @@
+.bundle/*
+.idea/*
+.yardoc/*
+.ruby-version
+pkg/*
+spec/scenario/db/*.sqlite3
+spec/scenario/tmp/*
+log/*
+db/*
+*.gem
+Gemfile.*lock
