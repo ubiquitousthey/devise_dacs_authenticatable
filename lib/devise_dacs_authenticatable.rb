@@ -28,6 +28,7 @@ module Devise
   def self.dacs_service_url(base_url, mapping)
     dacs_action_url(base_url, mapping, "service")
   end
+end
   
 Devise.add_module(:dacs_authenticatable,
   :strategy => true,
