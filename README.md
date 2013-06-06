@@ -2,7 +2,7 @@ devise_dacs_authenticatable
 ==========================
 
 Written by Heath Robinson<br/>
-Taking a lot of inspiration from [devise_dacs_authenticatable](http://github.com/nbudin/devise_cas_authenticatable)
+Taking a lot of inspiration from [devise_cas_authenticatable](http://github.com/nbudin/devise_cas_authenticatable)
 
 devise_dacs_authenticatable is [DACS](http://dacs.dss.ca/) single sign-on support for
 [Devise](http://github.com/plataformatec/devise) applications.  It acts as a replacement for
@@ -13,7 +13,6 @@ Requirements
 
 - Rails 2.3 or greater (works with 3.x versions as well)
 - Devise 1.0 or greater
-- rubycas-client
 
 Installation
 ------------
