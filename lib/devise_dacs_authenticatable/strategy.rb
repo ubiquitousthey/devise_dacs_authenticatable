@@ -52,16 +52,34 @@ module Devise
         
         p = URI::Parser.new(:HOSTNAME=>"(?:#{SUB_DOMAINLABEL}\\.)#{URI::REGEXP::PATTERN::DOMLABEL}\\.#{URI::REGEXP::PATTERN::TOPLABEL}\\.?")
         uri = p.parse("#{Devise.dacs_base_url}/dacs_current_credentials")
-        uri.query = URI.encode_www_form({:FORMAT => 'JSON', :DETAIL => 'yes'})
+        uri.query = URI.encode_www_form({:FORMAT => 'XML', :DETAIL => 'yes'})
         cookie_header = "#{cookie[0]}=#{cookie[1]}; path=/; domain=#{uri.host[uri.host.index('.')..-1]}"
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.get(uri.request_uri, {"Cookie" => "#{cookie_header}"})
-        Rails.logger.debug(response.code)
-        return nil unless response.code = 200
+        return nil unless response.code == "200"
 
-        Rails.logger.debug(response.body)
-        credentials = JSON.parse(response.body)
-        Rails.logger.debug(credentials.to_s)
+
+        doc = REXML::Document.new(response.body)
+        credentials = []
+        doc.elements.each('dacs_current_credentials/credentials') do |e|
+          if(!Devise.dacs_jurisdiction || e.attributes['jurisdiction'] == Devise.dacs_jurisdiction)
+            credentials << {
+              :name => e.attributes['name'],
+              :federation => e.attributes['federation'],
+              :jurisdiction => e.attributes['jurisdiction'],
+              :roles => e.attributes['roles'],
+              :cookie_name => e.attributes['cookie_name'],
+              :valid_for => e.attributes['valid_for'],
+              :auth_style => e.attributes['auth_style'],
+              :ip_address => e.attributes['ip_address'],
+              :auth_time => convert_time(e.attributes['auth_time']),
+              :expires_secs => convert_time(e.attributes['expires_secs']),
+              :ua_hash => e.attributes['ua_hash'],
+              :version => e.attributes['version']
+            }
+          end
+        end
+
         return credentials
       end
     end
