@@ -10,11 +10,15 @@ module Devise
       # True if the mapping supports authenticate_with_dacs.
       def valid?
         auth_with_dacs = mapping.to.respond_to?(:authenticate_with_dacs) && cookies.any? do |k,v| 
+          Rails.logger.info "DEBUG::#{k}"
           k.start_with?("DACS") && 
           (!Devise.dacs_jurisdiction ||
             k.split(":")[3] == Devise.dacs_jurisdiction)
         end
-        Rails.logger.info "Trying to authenticate with Dacs (#{{authenticate_with_dacs}}"
+        Rails.logger.info ":authenticate_with_dacs? - #{mapping.to.respond_to?(:authenticate_with_dacs)}"
+        Rails.logger.info ":Dacs jurisdiction? - #{Devise.dacs_jurisdiction}"
+        Rails.logger.info ":cookie? - #{mapping.to.respond_to?(:authenticate_with_dacs)}"
+        Rails.logger.info "Trying to authenticate with Dacs (#{:auth_with_dacs})"
         return auth_with_dacs
       end
       
