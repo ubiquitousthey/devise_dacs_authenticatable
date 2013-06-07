@@ -14,28 +14,19 @@ module Devise
         #   user object in the database.  
         # * Return the resulting user object.
         def authenticate_with_dacs(credentials)
-          if credentials.length > 0 
-            resource = nil
-            credentials.find do |cred|
-              Rails.logger.debug(cred.to_s)
-              Rails.logger.debug("DEBUG::Looking for #{::Devise.dacs_username_column} => #{cred['name']}")
-              conditions = {::Devise.dacs_username_column => cred[:name]} 
-              # We don't want to override Devise 1.1's find_for_authentication
-              resource = if respond_to?(:find_for_authentication)
-                find_for_authentication(conditions)
-              else
-                find(:first, :conditions => conditions)
-              end
-              
-              resource = new(conditions) if (resource.nil? and should_create_dacs_users?)
-              
-              if resource
-                resource.save
-              end
-            end
+          conditions = {::Devise.dacs_username_column => credentials} 
+          resource = if respond_to?(:find_for_authentication)
+            find_for_authentication(conditions)
+          else
+            find(:first, :conditions => conditions)
+          end
+          
+          resource = new(conditions) if (resource.nil? and should_create_dacs_users?)
+          
+          if resource
+            resource.save
           end
 
-          Rails.logger.debug("DEBUG::" + (resource ? resource.to_s : "Resource Nil"))
           return resource
         end
 
