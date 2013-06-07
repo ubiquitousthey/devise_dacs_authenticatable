@@ -5,10 +5,7 @@ module Devise
     class DacsAuthenticatable < Base
       # True if the mapping supports authenticate_with_dacs.
       def valid?
-        auth_with_dacs = mapping.to.respond_to?(:authenticate_with_dacs) &&
-        (!Devise.dacs_jurisdiction || 
-          request.env.fetch('DACS_JURISDICTION',nil) == Devise.dacs_jurisdiction) &&
-        request.env.fetch('DACS_USERNAME',nil)
+        auth_with_dacs = mapping.to.respond_to?(:authenticate_with_dacs) && (!Devise.dacs_jurisdiction || request.env.fetch('DACS_JURISDICTION',nil) == Devise.dacs_jurisdiction) && request.env.fetch('DACS_USERNAME',nil)
       end
       
       # Use the DACS_USERNAME to identify the user
