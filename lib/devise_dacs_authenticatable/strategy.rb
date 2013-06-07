@@ -9,11 +9,13 @@ module Devise
 
       # True if the mapping supports authenticate_with_dacs.
       def valid?
-        mapping.to.respond_to?(:authenticate_with_dacs) && cookies.any? do |k,v| 
+        auth_with_dacs = mapping.to.respond_to?(:authenticate_with_dacs) && cookies.any? do |k,v| 
           k.start_with?("DACS") && 
           (!Devise.dacs_jurisdiction ||
             k.split(":")[3] == Devise.dacs_jurisdiction)
         end
+        Rails.logger.info "Trying to authenticate with Dacs (#{{authenticate_with_dacs}}"
+        return auth_with_dacs
       end
       
       # Try to authenticate a user using the DACS cookie 
@@ -24,14 +26,13 @@ module Devise
       def authenticate!
         cred = fetch_credentials()
         if cred 
-          Rails.logger.debug("Failing in cred=true")
           if resource = mapping.to.authenticate_with_dacs(cred)
+            Rails.logger.info "Login success"
             success!(resource)
           else
             fail!(:invalid)
           end
         else
-          Rails.logger.debug("Failing in cred=false")
           fail!(:invalid)
         end
       end
@@ -58,7 +59,7 @@ module Devise
         response = http.get(uri.request_uri, {"Cookie" => "#{cookie_header}"})
         return nil unless response.code == "200"
 
-
+        Rails.logger.info "Received credentials"
         doc = REXML::Document.new(response.body)
         credentials = []
         doc.elements.each('dacs_current_credentials/credentials') do |e|
