@@ -19,6 +19,8 @@ module Devise
 
   @@dacs_jurisdiction = nil
 
+  @@test_user = nil
+
   mattr_accessor :dacs_base_url, :dacs_jurisdiction, :dacs_create_user, :dacs_username_column
 
   def self.dacs_create_user?

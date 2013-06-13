@@ -10,7 +10,7 @@ module Devise
       
       # Use the DACS_USERNAME to identify the user
       def authenticate!
-        cred = request.env.fetch('DACS_USERNAME',nil) 
+        cred = request.env.fetch('DACS_USERNAME',::Devise.test_user) 
         if cred 
           if resource = mapping.to.authenticate_with_dacs(cred)
             Rails.logger.info "Login success"
