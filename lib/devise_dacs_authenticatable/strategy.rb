@@ -11,6 +11,7 @@ module Devise
         Rails.logger.info "Try Dacs? #{Devise.test_user}"
         Rails.logger.info "Try Dacs? #{request.env.fetch('DACS_JURISDICTION',nil)}"
         Rails.logger.info "Try Dacs? #{request.env.fetch('DACS_USERNAME',Devise.test_user)}"
+        return auth_with_dacs
       end
       
       # Use the DACS_USERNAME to identify the user
